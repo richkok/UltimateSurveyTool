@@ -1,14 +1,17 @@
 from django import forms
 from django.forms import models
-from survey.models import Question, Category, Survey, Response, AnswerText, AnswerRadio, AnswerSelect, AnswerInteger, AnswerSelectMultiple
+from survey.models import Question, Response, AnswerText, AnswerRadio, AnswerSelect, AnswerInteger, AnswerSelectMultiple
 from django.utils.safestring import mark_safe
 import uuid
 
-# blatantly stolen from 
+
+# blatantly stolen from
 # http://stackoverflow.com/questions/5935546/align-radio-buttons-horizontally-in-django-forms?rq=1
+
+
 class HorizontalRadioRenderer(forms.RadioSelect.renderer):
-  def render(self):
-    return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+    def render(self):
+        return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
 
 
 class ResponseForm(models.ModelForm):
@@ -29,23 +32,25 @@ class ResponseForm(models.ModelForm):
         for q in survey.questions():
             if q.question_type == Question.TEXT:
                 self.fields["question_%d" % q.pk] = forms.CharField(label=q.text,
-                    widget=forms.Textarea)
+                                                                    widget=forms.Textarea)
             elif q.question_type == Question.RADIO:
                 question_choices = q.get_choices()
                 self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text,
-                    widget=forms.RadioSelect(renderer=HorizontalRadioRenderer),
-                    choices = question_choices)
+                                                                      widget=forms.RadioSelect(
+                                                                          renderer=HorizontalRadioRenderer),
+                                                                      choices=question_choices)
             elif q.question_type == Question.SELECT:
                 question_choices = q.get_choices()
                 # add an empty option at the top so that the user has to
                 # explicitly select one of the options
                 question_choices = tuple([('', '-------------')]) + question_choices
                 self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text,
-                    widget=forms.Select, choices = question_choices)
+                                                                      widget=forms.Select, choices=question_choices)
             elif q.question_type == Question.SELECT_MULTIPLE:
                 question_choices = q.get_choices()
                 self.fields["question_%d" % q.pk] = forms.MultipleChoiceField(label=q.text,
-                    widget=forms.CheckboxSelectMultiple, choices = question_choices)
+                                                                              widget=forms.CheckboxSelectMultiple,
+                                                                              choices=question_choices)
             elif q.question_type == Question.INTEGER:
                 self.fields["question_%d" % q.pk] = forms.IntegerField(label=q.text)
 
@@ -90,19 +95,19 @@ class ResponseForm(models.ModelForm):
                 q = Question.objects.get(pk=q_id)
 
                 if q.question_type == Question.TEXT:
-                    a = AnswerText(question = q)
+                    a = AnswerText(question=q)
                     a.body = field_value
                 elif q.question_type == Question.RADIO:
-                    a = AnswerRadio(question = q)
+                    a = AnswerRadio(question=q)
                     a.body = field_value
                 elif q.question_type == Question.SELECT:
-                    a = AnswerSelect(question = q)
+                    a = AnswerSelect(question=q)
                     a.body = field_value
                 elif q.question_type == Question.SELECT_MULTIPLE:
-                    a = AnswerSelectMultiple(question = q)
+                    a = AnswerSelectMultiple(question=q)
                     a.body = field_value
                 elif q.question_type == Question.INTEGER:
-                    a = AnswerInteger(question = q)
+                    a = AnswerInteger(question=q)
                     a.body = field_value
                 print "creating answer to question %d of type %s" % (q_id, a.question.question_type)
                 print a.question.text
@@ -111,8 +116,3 @@ class ResponseForm(models.ModelForm):
                 a.response = response
                 a.save()
         return response
-
-
-
-
-

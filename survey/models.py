@@ -7,7 +7,7 @@ class Survey(models.Model):
     description = models.TextField()
 
     def __unicode__(self):
-        return (self.name)
+        return self.name
 
     def questions(self):
         if self.pk:
@@ -21,11 +21,11 @@ class Category(models.Model):
     survey = models.ForeignKey(Survey)
 
     def __unicode__(self):
-        return (self.name)
+        return self.name
 
 
 def validate_list(value):
-    '''takes a text value and verifies that there is at least one comma '''
+    """takes a text value and verifies that there is at least one comma"""
     values = value.split(',')
     if len(values) < 2:
         raise ValidationError(
@@ -63,8 +63,8 @@ class Question(models.Model):
         super(Question, self).save(*args, **kwargs)
 
     def get_choices(self):
-        ''' parse the choices field and return a tuple formatted appropriately
-        for the 'choices' argument of a form widget.'''
+        """parse the choices field and return a tuple formatted appropriately
+        for the 'choices' argument of a form widget."""
         choices = self.choices.split(',')
         choices_list = []
         for c in choices:
@@ -74,7 +74,7 @@ class Question(models.Model):
         return choices_tuple
 
     def __unicode__(self):
-        return (self.text)
+        return self.text
 
 
 class Response(models.Model):

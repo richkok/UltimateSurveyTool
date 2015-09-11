@@ -24,23 +24,23 @@ class AnswerBaseInline(admin.StackedInline):
 
 
 class AnswerTextInline(AnswerBaseInline):
-    model= AnswerText
+    model = AnswerText
 
 
 class AnswerRadioInline(AnswerBaseInline):
-    model= AnswerRadio
+    model = AnswerRadio
 
 
 class AnswerSelectInline(AnswerBaseInline):
-    model= AnswerSelect
+    model = AnswerSelect
 
 
 class AnswerSelectMultipleInline(AnswerBaseInline):
-    model= AnswerSelectMultiple
+    model = AnswerSelectMultiple
 
 
 class AnswerIntegerInline(AnswerBaseInline):
-    model= AnswerInteger
+    model = AnswerInteger
 
 
 class ResponseAdmin(admin.ModelAdmin):

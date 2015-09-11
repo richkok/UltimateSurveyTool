@@ -1,13 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.core import urlresolvers
-from django.contrib import messages
-import datetime
+from django.http import HttpResponseRedirect
 from survey.settings import support_email
-
-from survey.models import Question, Survey, Category
+from survey.models import Survey, Category
 from survey.forms import ResponseForm
 
 
@@ -15,8 +9,8 @@ def index(request):
     return render(request, 'index.html')
 
 
-def survey_detail(request, id):
-    survey = Survey.objects.get(id=id)
+def survey_detail(request, p_id):
+    survey = Survey.objects.get(id=p_id)
     category_items = Category.objects.filter(survey=survey)
     categories = [c.name for c in category_items]
     print 'categories for this survey:'

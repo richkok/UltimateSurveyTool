@@ -1330,13 +1330,13 @@ if(typeof VMM != 'undefined' && typeof VMM.Date == 'undefined') {
 					    // IE 8 < Won't accept dates with a "-" in them.
 						time_parse = d.split("T");
 						if (d.match(":")) {
-							time_array = _time_parse[1].split(":");
+							time_array = time_parse[1].split(":");
 							if (	time_array[0]	>= 1	) {		date.setHours(			time_array[0]);	}
 							if (	time_array[1]	>= 1	) {		date.setMinutes(		time_array[1]);	}
 							if (	time_array[2]	>= 1	) {		date.setSeconds(		time_array[2]);	}
 							if (	time_array[3]	>= 1	) {		date.setMilliseconds(	time_array[3]);	}
 						}
-						_d_array = time_parse[0].split("-");
+						date_array = time_parse[0].split("-");
 						if (	date_array[0]			) {	date.setFullYear(		date_array[0]);			}
 						if (	date_array[1]	> 1		) {	date.setMonth(			date_array[1] - 1);		}
 						if (	date_array[2]	> 1		) {	date.setDate(			date_array[2]);			}
@@ -1911,7 +1911,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Util == 'undefined') {
 		================================================== */
 		// VMM.Util.isEven(n)
 		isEven: function(n){
-			return (n%2 === 0) ? true : false;
+			return (n%2 === 0);
 		},
 		/*	* Get URL Variables
 		================================================== */
@@ -8278,7 +8278,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 					is_in_view = true;
 				}
 				
-				if (true) {
+				if (is_in_view) {
 					
 					// CONDENSE WHAT IS DISPLAYED
 					if (config.nav.multiplier.current > 16 && is_minor) {

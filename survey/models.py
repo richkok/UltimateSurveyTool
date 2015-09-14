@@ -86,7 +86,7 @@ class Response(models.Model):
         ('2','Anna'),
     )
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_new=True)
+    updated = models.DateTimeField(auto_now=True)
     survey = models.ForeignKey(Survey)
     interviewer = models.CharField('Name of Interviewer', max_length=400, choices=INTERVIEWER_INPUT, default='1')
     interviewee = models.CharField('Name of Interviewee', max_length=400)

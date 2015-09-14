@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.contrib.auth.models import Group, User
+from django.forms import ModelChoiceField
 
 class Survey(models.Model):
     name = models.CharField(max_length=400)
@@ -80,10 +81,14 @@ class Question(models.Model):
 class Response(models.Model):
     # a response object is just a collection of questions and answers with a
     # unique interview uuid
+    INTERVIEWER_INPUT = (
+        ('1', 'Richie'),
+        ('2','Anna'),
+    )
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_new=True)
     survey = models.ForeignKey(Survey)
-    interviewer = models.CharField('Name of Interviewer', max_length=400)
+    interviewer = models.CharField('Name of Interviewer', max_length=400, choices=INTERVIEWER_INPUT, default='1')
     interviewee = models.CharField('Name of Interviewee', max_length=400)
     conditions = models.TextField('Conditions during interview', blank=True, null=True)
     comments = models.TextField('Any additional Comments', blank=True, null=True)

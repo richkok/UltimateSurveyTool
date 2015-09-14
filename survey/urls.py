@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-import settings
+from survey import settings
 
 admin.autodiscover()
 media_url = settings.MEDIA_URL.lstrip('/').rstrip('/')

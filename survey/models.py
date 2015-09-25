@@ -1,7 +1,13 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import Group, User
-from django.forms import ModelChoiceField
+
+
+class UserProfile(models.Model):
+    user = models.ForeignKey(User)
+    name = models.TextField(User.USERNAME_FIELD)
+    group = models.ForeignKey(Group)
+
 
 class Survey(models.Model):
     name = models.CharField(max_length=400)
@@ -81,15 +87,15 @@ class Question(models.Model):
 class Response(models.Model):
     # a response object is just a collection of questions and answers with a
     # unique interview uuid
-    INTERVIEWER_INPUT = (
-        ('1', 'Richie'),
-        ('2','Anna'),
-    )
+    INTERVIEWER_INPUT = tuple(User.objects.values_list('id', 'username').filter(is_staff=True, is_active=True))
+
+    INTERVIEWEE = tuple(User.objects.values_list('id', 'username').filter(is_staff=False, is_active=True))
+
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_new=True)
+    updated = models.DateTimeField(auto_now=True)
     survey = models.ForeignKey(Survey)
     interviewer = models.CharField('Name of Interviewer', max_length=400, choices=INTERVIEWER_INPUT, default='1')
-    interviewee = models.CharField('Name of Interviewee', max_length=400)
+    interviewee = models.CharField('Name of Interviewee', max_length=400, choices=INTERVIEWEE, default='1')
     conditions = models.TextField('Conditions during interview', blank=True, null=True)
     comments = models.TextField('Any additional Comments', blank=True, null=True)
     interview_uuid = models.CharField("Interview unique identifier", max_length=36)

@@ -3,12 +3,6 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import Group, User
 
 
-class UserProfile(models.Model):
-    user = models.ForeignKey(User)
-    name = models.TextField(User.USERNAME_FIELD)
-    group = models.ForeignKey(Group)
-
-
 class Survey(models.Model):
     name = models.CharField(max_length=400)
     description = models.TextField()
@@ -65,8 +59,10 @@ class Question(models.Model):
 
     def save(self, *args, **kwargs):
         if (not (not (self.question_type == Question.RADIO) and not (self.question_type == Question.SELECT) and not (
-            self.question_type == Question.SELECT_MULTIPLE))):
+                    self.question_type == Question.SELECT_MULTIPLE)
+                 )):
             validate_list(self.choices)
+
         super(Question, self).save(*args, **kwargs)
 
     def get_choices(self):
@@ -85,17 +81,29 @@ class Question(models.Model):
 
 
 class Response(models.Model):
+
     # a response object is just a collection of questions and answers with a
     # unique interview uuid
-    INTERVIEWER_INPUT = tuple(User.objects.values_list('id', 'username').filter(is_staff=True, is_active=True))
 
-    INTERVIEWEE = tuple(User.objects.values_list('id', 'username').filter(is_staff=False, is_active=True))
+    def get_choices(self):
+        """parse the choices field and return a tuple formatted appropriately
+        for the 'choices' argument of a form widget."""
+        choices = self.choices.split(',')
+        choices_list = []
+        for c in choices:
+            c = c.strip()
+            choices_list.append((c, c))
+        choices_tuple = tuple(choices_list)
+        return choices_tuple
+
+    INTERVIEWER_INPUT = User.objects.values_list('id', 'username')
+    INTERVIEWEE_INPUT = User.objects.values_list('id', 'username')
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     survey = models.ForeignKey(Survey)
     interviewer = models.CharField('Name of Interviewer', max_length=400, choices=INTERVIEWER_INPUT, default='1')
-    interviewee = models.CharField('Name of Interviewee', max_length=400, choices=INTERVIEWEE, default='1')
+    interviewee = models.CharField('Name of Interviewee', max_length=400, choices=INTERVIEWEE_INPUT, default='1')
     conditions = models.TextField('Conditions during interview', blank=True, null=True)
     comments = models.TextField('Any additional Comments', blank=True, null=True)
     interview_uuid = models.CharField("Interview unique identifier", max_length=36)
